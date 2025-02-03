@@ -1,69 +1,71 @@
-# DeepSeek-V3 Weight File Documentation
+--- INÍCIO DO ARQUIVO README_WEIGHTS.md ---
 
-## New Fields in `config.json`
+# Documentação do Arquivo de Pesos DeepSeek-V3
 
-- **model_type**: Specifies the model type, which is updated to `deepseek_v3` in this release.
-- **num_nextn_predict_layers**: Indicates the number of Multi-Token Prediction (MTP) Modules. The open-sourced V3 weights include **1 MTP Module** .
-- **quantization_config**: Describes the configuration for FP8 quantization.
+## Novos Campos em `config.json`
 
----
-
-## Weight Structure Overview
-
-The DeepSeek-V3 weight file consists of two main components: **Main Model Weights** and **MTP Modules**.
-
-### 1. Main Model Weights
-
-- **Composition**:
-  - Input/output embedding layers and a complete set of 61 Transformer hidden layers.
-- **Parameter Count**:
-  - Total parameters: **671B**
-  - Activation parameters: **36.7B** (including 0.9B for Embedding and 0.9B for the output Head).
-
-#### Structural Details
-
-- **Embedding Layer**:
-  - `model.embed_tokens.weight`
-- **Transformer Hidden Layers**:
-  - `model.layers.0` to `model.layers.60`, totaling `num_hidden_layers` layers.
-- **Output Layer**:
-  - `model.norm.weight`
-  - `lm_head.weight`
-
-### 2. Multi-Token Prediction (MTP) Modules
-
-- **Composition**:
-  - Additional MTP Modules defined by the `num_nextn_predict_layers` field. In this model, the value is set to 1.
-- **Parameter Count**:
-  - Parameters: **11.5B unique parameters**, excluding the shared 0.9B Embedding and 0.9B output Head).
-  - Activation parameters: **2.4B** (including the shared 0.9B Embedding and 0.9B output Head).
-
-#### Structural Details
-
-- **embed_tokens**: **Shares parameters** with the Embedding layer of the Main Model weights.
-- **enorm & hnorm**: RMSNorm parameters required for speculative decoding.
-- **eh_proj**: Parameters for dimensionality reduction projection on the norm results.
-- **Additional Transformer Hidden Layer**:
-  - `model.layers.61.self_attn & mlp` (structure identical to the Main Model hidden layers).
-- **shared_head**: **Shares parameters** with the output Head of the Main Model weights.
+-   **model_type**: Especifica o tipo de modelo, que é atualizado para `deepseek_v3` nesta versão.
+-   **num_nextn_predict_layers**: Indica o número de Módulos de Predição Multi-Token (MTP). Os pesos V3 de código aberto incluem **1 Módulo MTP**.
+-   **quantization_config**: Descreve a configuração para quantização FP8.
 
 ---
 
-### Loading Rules
+## Visão Geral da Estrutura de Pesos
 
-- **Main Model Weights**: Loaded via the `num_hidden_layers` parameter in `config.json`.
-- **MTP Modules**: Loaded via the `num_nextn_predict_layers` parameter, with layer IDs appended immediately after the Main Model hidden layers. For example:
-  - If `num_hidden_layers = 61` and `num_nextn_predict_layers = 1`, the MTP Module's layer ID is `61`.
+O arquivo de pesos DeepSeek-V3 consiste em dois componentes principais: **Pesos do Modelo Principal** e **Módulos MTP**.
+
+### 1. Pesos do Modelo Principal
+
+-   **Composição**:
+    -   Camadas de incorporação de entrada/saída e um conjunto completo de 61 camadas ocultas do Transformer.
+-   **Contagem de Parâmetros**:
+    -   Total de parâmetros: **671B**
+    -   Parâmetros de ativação: **36,7B** (incluindo 0,9B para Incorporação e 0,9B para o Head de saída).
+
+#### Detalhes Estruturais
+
+-   **Camada de Incorporação**:
+    -   `model.embed_tokens.weight`
+-   **Camadas Ocultas do Transformer**:
+    -   `model.layers.0` a `model.layers.60`, totalizando `num_hidden_layers` camadas.
+-   **Camada de Saída**:
+    -   `model.norm.weight`
+    -   `lm_head.weight`
+
+### 2. Módulos de Predição Multi-Token (MTP)
+
+-   **Composição**:
+    -   Módulos MTP adicionais definidos pelo campo `num_nextn_predict_layers`. Neste modelo, o valor é definido como 1.
+-   **Contagem de Parâmetros**:
+    -   Parâmetros: **11,5B de parâmetros únicos**, excluindo os 0,9B de Incorporação e 0,9B de Head de saída compartilhados).
+    -   Parâmetros de ativação: **2,4B** (incluindo os 0,9B de Incorporação e 0,9B de Head de saída compartilhados).
+
+#### Detalhes Estruturais
+
+-   **embed_tokens**: **Compartilha parâmetros** com a camada de Incorporação dos pesos do Modelo Principal.
+-   **enorm & hnorm**: Parâmetros RMSNorm necessários para decodificação especulativa.
+-   **eh_proj**: Parâmetros para projeção de redução de dimensionalidade nos resultados da norma.
+-   **Camada Oculta Adicional do Transformer**:
+    -   `model.layers.61.self_attn & mlp` (estrutura idêntica às camadas ocultas do Modelo Principal).
+-   **shared_head**: **Compartilha parâmetros** com o Head de saída dos pesos do Modelo Principal.
 
 ---
 
-## FP8 Weight Documentation
+### Regras de Carregamento
 
-DeepSeek-V3 natively supports FP8 weight format with 128x128 block scaling.
+-   **Pesos do Modelo Principal**: Carregados via o parâmetro `num_hidden_layers` em `config.json`.
+-   **Módulos MTP**: Carregados via o parâmetro `num_nextn_predict_layers`, com IDs de camada anexados imediatamente após as camadas ocultas do Modelo Principal. Por exemplo:
+    -   Se `num_hidden_layers = 61` e `num_nextn_predict_layers = 1`, o ID da camada do Módulo MTP é `61`.
 
-### FP8 Configuration
+---
 
-The FP8 weight file introduces a `quantization_config` field to describe the quantization method. Below is an example configuration:
+## Documentação de Pesos FP8
+
+O DeepSeek-V3 oferece suporte nativo ao formato de peso FP8 com escalonamento de bloco 128x128.
+
+### Configuração FP8
+
+O arquivo de peso FP8 introduz um campo `quantization_config` para descrever o método de quantização. Abaixo está um exemplo de configuração:
 
 ```json
 "quantization_config": {
@@ -74,21 +76,21 @@ The FP8 weight file introduces a `quantization_config` field to describe the qua
 }
 ```
 
-- **Quantization Format**:
-  - Format type: `fp8` and `e4m3` (corresponding to `torch.float8_e4m3fn`).
-  - Weight block size: `128x128`.
-- **Activation Quantization Scheme**:
-  - Utilizes dynamic activation quantization (`dynamic`).
+-   **Formato de Quantização**:
+    -   Tipo de formato: `fp8` e `e4m3` (correspondente a `torch.float8_e4m3fn`).
+    -   Tamanho do bloco de peso: `128x128`.
+-   **Esquema de Quantização de Ativação**:
+    -   Utiliza quantização de ativação dinâmica (`dynamic`).
 
-### Dequantization Method
+### Método de Desquantização
 
-The FP8 weight file includes a `weight_scale_inv` field, which stores the dequantization scale for each weight block.
+O arquivo de peso FP8 inclui um campo `weight_scale_inv`, que armazena a escala de desquantização para cada bloco de peso.
 
-- **Storage Format**: `float32 Tensor`, stored alongside the weight data.
-- **Dequantization Formula**:
-  - If the weight block is not aligned to 128, it is zero-padded to 128 before calculating the scale. After quantization, the padded portion is removed.
-  - The dequantization process is performed as: `(128x128 weight block) * weight_scale_inv`.
+-   **Formato de Armazenamento**: `Tensor float32`, armazenado junto com os dados de peso.
+-   **Fórmula de Desquantização**:
+    -   Se o bloco de peso não estiver alinhado a 128, ele é preenchido com zero até 128 antes de calcular a escala. Após a quantização, a parte preenchida é removida.
+    -   O processo de desquantização é realizado como: `(bloco de peso 128x128) * weight_scale_inv`.
 
-Through dequantization of the FP8 weights, runtime operations enable online quantization at a granularity of `per-token-per-128-channel`.
+Por meio da desquantização dos pesos FP8, as operações de tempo de execução permitem a quantização online com uma granularidade de `por-token-por-128-canal`.
 
 ---

@@ -1,23 +1,23 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: "[BUG]"
-labels: ''
-assignees: ''
+nome: Relatório de bug
+sobre: Crie um relatório para nos ajudar a melhorar
+título: "[BUG]"
+rótulos: ''
+atribuídos: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Descreva o bug**
+Uma descrição clara e concisa de qual é o bug.
 
-**To Reproduce**
-Steps to reproduce the behavior.
+**Como Reproduzir**
+Passos para reproduzir o comportamento.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Comportamento Esperado**
+Uma descrição clara e concisa do que você esperava que acontecesse.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Capturas de Tela**
+Se aplicável, adicione capturas de tela para ajudar a explicar seu problema.
 
-**Additional context**
-Add any other context about the problem here.
+**Contexto Adicional**
+Adicione qualquer outro contexto sobre o problema aqui.
